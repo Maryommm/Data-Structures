@@ -167,6 +167,7 @@ public class ManageProducts {
                         System.out.println("Enter The New Product Name:");
                         pro.setName(scan.next());
                         products.insert(pro); //insert again
+                        System.out.println("Product" + pro.getProductId() + "Name Updated Successfully!");
                     }
                     break;
                     case 2: //update product price
@@ -174,6 +175,7 @@ public class ManageProducts {
                         System.out.println("Enter The New Product Price:");
                         pro.setPrice(scan.nextDouble());
                         products.insert(pro); //insert again
+                        System.out.println("Product" + pro.getProductId() + "Price Updated Successfully!");
                     }
                     break;
                     case 3: //update product stock
@@ -181,6 +183,7 @@ public class ManageProducts {
                         System.out.println("Enter The New Product Stock:");
                         pro.setStock(scan.nextInt());
                         products.insert(pro);//insert again
+                        System.out.println("Product" + pro.getProductId() + "Stock Updated Successfully!");
                     }
                     break;
                     case 0: //exit

@@ -15,11 +15,11 @@ public class ManageProducts {
     public ManageProducts(String fName){
        try{
                 File data = new File(fName);
-                Scanner reader = new Scanner (data);
-                String byline = reader.nextLine(); // we read it here because we want to skip the first row from file(titles)
+                Scanner read = new Scanner (data);
+                String byline = read.nextLine(); // we read it here because we want to skip the first row from file(titles)
                 
-                while(reader.hasNext()){
-                    byline = reader.nextLine();
+                while(read.hasNext()){
+                    byline = read.nextLine();
                     String [] alldata = byline.split(","); //split every row to cells every cell have one index in array
                     
                     int proId = Integer.parseInt(alldata[0]);
@@ -30,7 +30,7 @@ public class ManageProducts {
                     Products product = new Products(proId, proName, proPrice, proStock ); 
                     products.insert(product); // insert one object in Products linked list
                 }
-                reader.close();
+                read.close();
             }
             catch (Exception ex) { // in case there is an exception while we read from the file
                 System.out.println(ex.getMessage());

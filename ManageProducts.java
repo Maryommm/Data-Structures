@@ -91,42 +91,38 @@ public class ManageProducts {
         return null;
     }
 
-    public Products makeProOutOfStock(){
-        if (products.empty()) // the list empty can't delete
-        {
-            System.out.println("There Is No Products To Delete!");
-        }
-        else{
-            System.out.println("Please Enter product ID: ");
-            int proId = scan.nextInt();
-            
-            boolean founded = false;
-            products.findFirst();
-            
-            while (!products.last()){ // searching for the product to delete it 
-                if (products.retrieve().getProductId()== proId)
-                {
-                    founded = true;
-                    break;
-                }
-                products.findNext();
+    public Products deleteProduct(){
+            if (products.empty()){
+                System.out.println("There Is No Products To Delete!");
             }
-            if (products.retrieve().getProductId()== proId)
-                founded = true; // the checking last one node
-        
-            if (founded)
-            {
+            else{
+                System.out.println("Please Enter product ID: ");
+                int proID = scan.nextInt();
                 
-                Products pro = products.retrieve();
-                products.remove(); // delete the node
-                pro.setStock(0); // update stack
-                products.insert(pro);// insert the updated product(now it can be used it canceled)
-                return pro;
+                boolean founded = false;
+                
+                products.findFirst();
+                while (!products.last()){
+                    if (products.retrieve().getProductId()== proID) {
+                        founded = true;
+                        break;
+                    }
+                    products.findNext();
+                }
+                if (products.retrieve().getProductId()== proID)
+                    founded = true;
+            
+                if (founded){
+                    Products p = products.retrieve();
+                    products.remove();
+                    p.setStock(-1);
+                    return p;
+                }
             }
+            System.out.println("Incorrect Product ID!");
+            return null;
         }
-        System.out.println("Incorrect Product ID!");
-        return null;
-    }
+
   
     public Products EditProduct(){
         if (products.empty())
@@ -247,6 +243,21 @@ public class ManageProducts {
                 products.findNext();
             }
         } 
+    }
+    
+    public boolean isAvailableProductId(int proID)
+    {
+        if (! products.empty())
+        {
+            products.findFirst();
+            for ( int i = 0 ; i< products.size() ; i++)
+            {
+                if (products.retrieve().getProductId() == proID && products.retrieve().getStock() != -1)
+                    return true;
+                products.findNext();
+            }
+        }
+        return false ;
     }
 
     public boolean validatProductId(int proID){ //to check is the product in the list?(here we are checking by ID)

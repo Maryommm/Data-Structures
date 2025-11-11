@@ -49,8 +49,32 @@ public class Main {
         }while (ch!= 0);
     }
     public static void CollData()
-    {// until we done!!!!!!!
+    {
+        System.out.println("loading data from CVSs files");
+        products = prodata.getproductsData();
+        reviews = revdata.getreviewsData();
+        
+        ///add Orders To Customers
+        
+        ///add Rviews To products
+        products.findFirst();
+        for(int i = 0 ; i < products.size(); i++)
+        {
+            reviews.findFirst();
+            for ( int j = 0 ; j < reviews.size() ; j ++)
+            {
+                if (products.retrieve().getProductId() == reviews.retrieve().getProduct())
+                {
+                    int rid =reviews.retrieve().getReviewId();
+                    products.retrieve().addReview(rid);
+                }
+                reviews.findNext();
+            }
+            products.findNext();
+        }
+        
     }
+    
     
     public static void productsMenu()
     {
@@ -205,7 +229,7 @@ public class Main {
         
         System.out.println("Enter The Product ID:");
         int proID =scan.nextInt();
-        while ( ! prodata.isAvailableProductId(proID))
+        while ( ! prodata.isAvailableProduct(proID))
         {
             System.out.println("Sorry Can't Add Review Somthing Wrong With Product ID , Try Another One:");
             proID =scan.nextInt();

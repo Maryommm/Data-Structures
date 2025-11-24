@@ -1,0 +1,120 @@
+import java.time.LocalDate;
+import java.time.format.DateTimeFormatter;
+import java.util.Date;
+
+public class Order {
+     int orderId;
+     int customerId; // link to specific customer
+     double totalPrice;
+     LocalDate orderDate;    
+     String status;
+     LinkedList<Integer>productIds= new LinkedList <Integer> (); // list of products
+    
+     public Order() {
+        this.orderId = 0;
+        this.customerId = 0;
+        this.totalPrice = 0;
+        this.status = "";
+    }
+
+
+    // consrtuctor
+    public Order(int orderId, int customerId, Integer [] pids, double totalPrice,  String orderDate, String status) {
+        this.orderId = orderId;
+        this.customerId = customerId;
+        this.totalPrice = totalPrice;
+        this.orderDate = LocalDate.parse(orderDate);
+        this.status = status;
+        
+        for (int i = 0 ; i < pids.length ; i++)
+          productIds.insert(pids[i]);
+
+    }
+    
+   public void addProduct (Integer product )
+    {
+        productIds.insert(product);
+    }
+
+    
+   
+  
+    // geters
+    public int getOrderId() { return orderId; }
+    public int getCustomerId() { return customerId; }
+    public LinkedList<Integer> getProductIds() { return productIds; }
+    public double getTotalPrice() { return totalPrice; }
+    public  LocalDate getOrderDate() { return orderDate; }
+    public String getStatus() { return status; }
+
+   // serers
+    public void setStatus(String status)// set status
+    { this.status = status; }
+
+    public void setTotal_price(double Tp){
+    totalPrice=Tp;
+    
+    }
+    public void setOrderId(int id){
+    orderId=id;
+    
+    }
+    public void setCustomerId(int id){
+    customerId=id;
+    
+    }
+     public void setProducts(int pid) {
+        this.productIds.insert(pid);
+    }
+    
+   public void setOrderDate(LocalDate date){
+   orderDate=date;
+    
+    }
+    
+  public boolean removeProduct( Integer P){
+    
+        if ( ! productIds.empty())
+        {
+            productIds.findFirst();
+            while(! productIds.last())
+            {
+                if (productIds.retrieve() == P)
+                {
+                    productIds.remove();
+                    return true;
+                }
+                else
+                    productIds.findNext();
+            }
+            if (productIds.retrieve() == P)
+            {
+                productIds.remove();
+                return true;
+            }
+        }
+        return false;
+    }
+
+    @Override
+    public String toString() {
+        String str =  "\nOrder{" + "order ID=" + orderId + ", customer ID=" + customerId 
+                + ",total price=" + totalPrice 
+                + " , status =" + status
+                + ", date =" + orderDate;
+        if ( ! productIds.empty())
+        {
+            str += "(products List" ;
+            productIds.findFirst();
+            while(! productIds.last())
+            {
+                str += productIds.retrieve() + " ";
+                productIds.findNext();
+            }
+            str += productIds.retrieve() + " )";
+        }
+        str +=  " }";
+        return str;        
+ 
+}
+}

@@ -1,0 +1,186 @@
+import java.io.File;
+import java.time.LocalDate;
+import java.time.format.DateTimeFormatter;
+import java.util.Scanner;
+
+
+public class manageOrders {
+    public static Scanner input = new Scanner (System.in);
+    private LinkedList<Order> all_orders= new LinkedList<Order> ();
+    
+    //consrtuctor
+     public manageOrders ( String fileName){
+    
+        try{
+                File docsfile = new File(fileName);
+                Scanner reader = new Scanner (docsfile);
+                String line = reader.nextLine();
+                
+                while(reader.hasNext())
+                {
+                    line = reader.nextLine();
+                    String [] data = line.split(","); 
+                    int oid = Integer.parseInt(data[0]);
+                    int cid = Integer.parseInt(data[1]);
+                    
+                    String  pp =  data[2].replaceAll("\"", "");
+                    String [] p = pp.split(";");
+                    Integer [] pids = new Integer [p.length];
+                    for ( int i = 0 ; i< pids.length ; i++)
+                        pids[i] = new Integer(Integer.parseInt(p[i].trim()));
+                    double price = Double.parseDouble(data[3]);
+                    String date = data[4];
+                    String status = data[5];
+                            
+                    Order order = new Order(oid, cid, pids, price, date, status );
+                    all_orders.insert(order);
+                    
+                }
+                reader.close();
+            }
+            catch (Exception ex) {
+                System.out.println(ex.getMessage());
+            }
+     }
+   
+   
+    //get list of orders
+public LinkedList<Order> get_Orders()
+{
+return all_orders;
+}
+
+ public Order searchOrderById(int id) {// search for spicifc order using id
+        if (all_orders.empty()) 
+        return null;
+
+        all_orders.findFirst();
+        while (true) {// to check the last order id
+            Order o = all_orders.retrieve();
+            if (o.getOrderId() == id)
+                return o;
+            if (all_orders.last())
+                break;
+            all_orders.findNext();
+        }
+        System.out.println("No such Order");
+
+        return null;
+    }
+    
+    public boolean orderIDIsFound(int oid)
+    {
+        if (!all_orders.empty())
+        {
+            all_orders.findFirst();
+            while (!all_orders.last())
+            {
+                if (all_orders.retrieve().getOrderId()== oid)
+                    return true;
+                all_orders.findNext();
+            }
+            if (all_orders.retrieve().getOrderId()== oid)
+                return true;
+        }
+        return false;
+    }
+
+
+public boolean UpdateOrder( int orderID)
+    {
+        boolean found = false;
+        all_orders.findFirst();
+        while (!all_orders.last())
+        {
+            if (all_orders.retrieve().getOrderId()== orderID)
+            {
+                found = true;
+                break;
+            }
+            all_orders.findNext();
+        }
+        if (all_orders.retrieve().getOrderId()== orderID)
+            found = true;
+
+        if (found )
+        {
+            if ( all_orders.retrieve().getStatus().compareToIgnoreCase("cancelled") == 0)
+            {
+                System.out.println("could not change status for cancelled order");
+                return false;
+            }
+             else
+            {
+                Order obj = all_orders.retrieve();
+
+                System.out.println("Status of order is " + all_orders.retrieve().getStatus() );
+                System.out.println("Enter new status  (pending, shipped, delivered, cancelled)");
+
+                String str = input.next();
+                all_orders.remove();
+                obj.status = str;
+                all_orders.insert(obj);
+                 System.out.println("Oerdr status is Updated to "+str);
+
+                return true;
+            }
+        }
+        System.out.println("No such Order");
+        return false;
+    }
+   
+ 
+public int cancelOrder (int oid){
+ 
+      all_orders.findFirst();
+        for ( int i = 0 ; i < all_orders.size() ; i++)
+        {
+            if ( all_orders.retrieve().getOrderId() == oid )
+            {
+            if (all_orders.retrieve().getStatus().compareToIgnoreCase("canceled") == 0)
+            {
+                    System.out.println("Order " + all_orders.retrieve().getOrderId() + " was cancelled before");
+                    return 2; // canceled before 
+                }
+                
+            Order a = all_orders.retrieve(); 
+                a.setStatus("canceled") ;
+                all_orders.insert(a);
+                return 1;  // should update the customer and stock of products
+            }
+            else
+                all_orders.findNext();
+        }
+        return 0; // not found order
+    }
+    
+  
+    
+ 
+public LinkedList<Order> BetweenTwoDates(String date1, String date2)
+    {
+        LinkedList<Order> ordersbetweenDates =  new LinkedList<Order>();
+        
+        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("dd/MM/yyyy");
+        LocalDate Ldate1 = LocalDate.parse(date1, formatter);
+        LocalDate Ldate2 = LocalDate.parse(date2, formatter);
+        
+        if (! all_orders.empty())
+        {
+            all_orders.findFirst();
+            
+            for ( int i = 0 ; i < all_orders.size() ; i++)
+            {
+                if ( all_orders.retrieve().getOrderDate().isAfter(Ldate1) && all_orders.retrieve().getOrderDate().isBefore(Ldate2))
+                {
+                    ordersbetweenDates.insert(all_orders.retrieve());
+                    System.out.println(all_orders.retrieve());
+                }
+               all_orders.findNext();
+            }
+        }
+        return ordersbetweenDates;
+   }
+
+  }
+
